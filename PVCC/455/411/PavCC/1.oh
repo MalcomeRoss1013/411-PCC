@@ -1,0 +1,200 @@
+import React, { useState } from 'react';
+
+
+function App() {
+  const [forms, setForms] = useState([
+    {
+      data: [
+        {
+          included: 'y',
+          quantity: 1,
+          description: 'brick',
+          type: 'material',
+          cost: 850.0,
+          'total(no markup)': 1190.0,
+          total: 850.0,
+          expense: 1190.0,
+          revenue: '',
+          Pricing: '',
+          OurCost: '',
+          JobProfit: '',
+        },
+        // Add more initial entries for the first form as needed
+      ],
+      columns: [
+        'included',
+        'quantity',
+        'description',
+        'type',
+        'cost',
+        'total(no markup)',
+        'total',
+        'expense',
+        'revenue',
+        'Pricing',
+        'OurCost',
+        'JobProfit',
+      ],
+      columnVisibility: {},
+    },
+  ]);
+
+  const [currentFormIndex, setCurrentFormIndex] = useState(0);
+
+
+
+  const handleQuantityChange = (formIndex, rowIndex, newQuantity) => {
+    const form = forms[formIndex];
+    const updatedData = [...form.data];
+    updatedData[rowIndex].quantity = parseInt(newQuantity, 10) || 0;
+    const updatedForms = [...forms];
+    updatedForms[formIndex].data = updatedData;
+    setForms(updatedForms);
+  };
+
+  const toggleColumnVisibility = (formIndex, columnName) => {
+    setForms((prevForms) => {
+      const updatedForms = [...prevForms];
+      updatedForms[formIndex].columnVisibility[columnName] =
+        !updatedForms[formIndex].columnVisibility[columnName];
+      return updatedForms;
+    });
+  };
+
+  const addNewEntry = (formIndex) => {
+    const form = forms[formIndex];
+    const newEntry = {};
+    form.columns.forEach((column) => {
+      newEntry[column] = column === 'quantity' ? 0 : '';
+    });
+    const updatedData = [...form.data, newEntry];
+    const updatedForms = [...forms];
+    updatedForms[formIndex].data = updatedData;
+    setForms(updatedForms);
+  };
+
+  const addNewColumn = (formIndex) => {
+    const form = forms[formIndex];
+    const newColumnName = prompt('Enter the name for the new column:');
+    if (newColumnName) {
+      const updatedColumns = [...form.columns, newColumnName];
+      const updatedForms = [...forms];
+      updatedForms[formIndex].columns = updatedColumns;
+      updatedForms[formIndex].columnVisibility[newColumnName] = true;
+      setForms(updatedForms);
+    }
+  };
+
+  const createNewForm = () => {
+    setForms((prevForms) => [
+      ...prevForms,
+      {
+        data: [],
+        columns: [],
+        columnVisibility: {},
+      },
+    ]);
+    setCurrentFormIndex(forms.length);
+  };
+
+  const resetForms = () => {
+    setForms([
+      {
+        data: [],
+        columns: [],
+        columnVisibility: {},
+      },
+    ]);
+    setCurrentFormIndex(0);
+  };
+
+  const calculateTotal = (formIndex) => {
+    const form = forms[formIndex];
+    let calculatedTotal = {};
+    form.columns.forEach((col) => {
+      calculatedTotal[col] = 0;
+    });
+    form.data.forEach((item) => {
+      form.columns.forEach((col) => {
+        calculatedTotal[col] += parseFloat(item[col]) || 0;
+      });
+    });
+
+    setForms((prevForms) => {
+      const updatedForms = [...prevForms];
+      updatedForms[formIndex].columnVisibility = calculatedTotal;
+      return updatedForms;
+    });
+  };
+
+  return (
+    <div className="App">
+      <title>Cost Calculator</title>
+ 
+
+    <h1>Cost Calculator</h1>
+    <button id="create-new-form" onclick="createNewForm()">Create New Form</button>
+    <button id="reset-forms" onclick="resetForms()">Start Over</button>
+    <div id="forms-container">
+       {/*  <!-- Loop through forms -->  */}
+       {/*  <!-- Replace this comment with the loop if you're using a templating engine like React or Angular --> */}
+        <div id="form-1">
+            <h2>Form 1</h2>
+            <table>
+                <thead>
+                    <tr>
+                       {/*  <!-- Loop through columns -->  */}
+                       {/* <!-- Replace this comment with the loop if you're using a templating engine like React or Angular --> */}
+                        <th>
+                            <div>
+                                <input type="checkbox" id="column-included" onchange="toggleColumnVisibility(1, 'included')" />
+                                included
+                            </div>
+                        </th>
+                        <th>
+                            <div>
+                                <input type="checkbox" id="column-quantity" onchange="toggleColumnVisibility(1, 'quantity')" />
+                                quantity
+                            </div>
+                        </th>
+                       {/*  <!-- Add more columns here --> */}
+                    </tr>
+                </thead>
+                <tbody id="form-1-data">
+                    {/* <!-- Loop through data rows --> */}
+                   {/*  <!-- Replace this comment with the loop if you're using a templating engine like React or Angular --> */}
+                    <tr>
+                        <td><input type="checkbox" id="data-included" /></td>
+                        <td><input type="number" id="data-quantity" value="1" onchange="handleQuantityChange(1, 0, this.value)" /></td>
+                       {/*  <!-- Add more data columns here --> */}
+                    </tr>
+                  {/* <!-- Add more rows as needed -->*/} 
+                </tbody>
+            </table>
+            <button id="add-new-column" onclick="addNewColumn(1)">Add New Column</button>
+            <button id="add-new-entry" onclick="addNewEntry(1)">Add New Entry</button>
+            <div>
+                <h2>Totals</h2>
+                <table> 
+                    <tbody id="form-1-total">
+                      {/*   <!-- Loop through columns -->
+                        //<!-- Replace this comment with the loop if you're using a templating engine like React or Angular -->*/} 
+                        <tr>
+                            <td><input type="number" id="total-included" /></td>
+                            <td><input type="number" id="total-quantity" /></td>
+                           {/*  <!-- Add more total columns here --> */} 
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button id="calculate-total" onclick="calculateTotal(1)">Calculate Totals</button>
+        </div>
+    </div>
+</div>
+
+   
+   
+  );
+}
+
+export default App;

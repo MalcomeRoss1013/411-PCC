@@ -1,0 +1,260 @@
+import React, { useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap';
+
+
+function App() {
+  const [tables, setTables] = useState([
+    {
+      data: [
+        {
+          included: 'y',
+          quantity: 1,
+          description: 'brick',
+          type: 'material',
+          cost: 850.0,
+          'total(no markup)': 1190.0,
+          total: 850.0,
+          expense: 1190.0,
+          revenue: '',
+          Pricing: '',
+          OurCost: '',
+          JobProfit: '',
+        },
+        // Add more initial entries for the first table as needed
+      ],
+      columns: [
+        'included',
+        'quantity',
+        'description',
+        'type',
+        'cost',
+        'total(no markup)',
+        'total',
+        'expense',
+        'revenue',
+        'Pricing',
+        'OurCost',
+        'JobProfit',
+      ],
+      columnVisibility: {},
+    },
+  ]);
+
+  const [currentTableIndex, setCurrentTableIndex] = useState(0);
+
+  const calculateTotal = () => {
+    const table = tables[currentTableIndex];
+    let calculatedTotal = {};
+    table.columns.forEach((col) => {
+      calculatedTotal[col] = 0;
+    });
+    table.data.forEach((item) => {
+      table.columns.forEach((col) => {
+        calculatedTotal[col] += parseFloat(item[col]) || 0;
+      });
+    });
+
+    setTables((prevTables) => {
+      const updatedTables = [...prevTables];
+      updatedTables[currentTableIndex].columnVisibility = calculatedTotal;
+      return updatedTables;
+    });
+  };
+
+  const handleQuantityChange = (tableIndex, rowIndex, newQuantity) => {
+    const table = tables[tableIndex];
+    const updatedData = [...table.data];
+    updatedData[rowIndex].quantity = parseInt(newQuantity, 10) || 0;
+    const updatedTables = [...tables];
+    updatedTables[tableIndex].data = updatedData;
+    setTables(updatedTables);
+  };
+
+  const toggleColumnVisibility = (tableIndex, columnName) => {
+    setTables((prevTables) => {
+      const updatedTables = [...prevTables];
+      updatedTables[tableIndex].columnVisibility[columnName] =
+        !updatedTables[tableIndex].columnVisibility[columnName];
+      return updatedTables;
+    });
+  };
+
+  const addNewEntry = (tableIndex) => {
+    const table = tables[tableIndex];
+    const newEntry = {};
+    table.columns.forEach((column) => {
+      newEntry[column] = column === 'quantity' ? 0 : '';
+    });
+    const updatedData = [...table.data, newEntry];
+    const updatedTables = [...tables];
+    updatedTables[tableIndex].data = updatedData;
+    setTables(updatedTables);
+  };
+
+  const addNewColumn = (tableIndex) => {
+    const table = tables[tableIndex];
+    const newColumnName = prompt('Enter the name for the new column:');
+    if (newColumnName) {
+      const updatedColumns = [...table.columns, newColumnName];
+      const updatedTables = [...tables];
+      updatedTables[tableIndex].columns = updatedColumns;
+      updatedTables[tableIndex].columnVisibility[newColumnName] = true;
+      setTables(updatedTables);
+    }
+  };
+
+  const createNewTable = () => {
+    setTables((prevTables) => [
+      ...prevTables,
+      {
+        data: [],
+        columns: [], // Add default column titles here
+        columnVisibility: {},
+      },
+    ]);
+    setCurrentTableIndex(tables.length);
+  };
+
+  const resetTables = () => {
+    setTables([
+      {
+        data: [],
+        columns: [], // Add default column titles here
+        columnVisibility: {},
+      },
+    ]);
+    setCurrentTableIndex(0);
+  };
+
+  const defaultTable = {
+    data: [
+      {
+        included: 'y',
+        quantity: 1,
+        description: 'default',
+        type: 'default',
+        cost: 0.0,
+        'total(no markup)': 0.0,
+        total: 0.0,
+        expense: 0.0,
+        revenue: '',
+        Pricing: '',
+        OurCost: '',
+        JobProfit: '',
+      },
+      // Add more initial entries for the default table as needed
+    ],
+    columns: [
+      'included',
+      'quantity',
+      'description',
+      'type',
+      'cost',
+      'total(no markup)',
+      'total',
+      'expense',
+      'revenue',
+      'Pricing',
+      'OurCost',
+      'JobProfit',
+    ],
+    columnVisibility: {},
+  };
+
+  return (
+    <div className="App">
+      <h1>Cost Calculator</h1>
+      <button onClick={createNewTable}>Create New Table</button>
+      <button onClick={() => resetTables()}>Start Over</button>
+      {tables.map((table, index) => (
+        <div key={index}>
+          <h2>Table {index + 1}</h2>
+          <table>
+            <thead>
+              <tr>
+                {table.columns.map((column, colIndex) => (
+                  <th key={colIndex}>
+                    <div>
+                      <input
+                        type="checkbox"
+                        checked={table.columnVisibility[column]}
+                        onChange={() => toggleColumnVisibility(index, column)}
+                      />
+                      {column}
+                    </div>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {table.data.map((item, rowIndex) => (
+                <tr key={rowIndex}>
+                  {table.columns.map((column, colIndex) => (
+                    <td key={colIndex}>
+                      {column === 'quantity' ? (
+                        <input
+                          type="number"
+                          value={item[column]}
+                          onChange={(e) => handleQuantityChange(index, rowIndex, e.target.value)}
+                        />
+                      ) : (
+                        <input
+                          type="text"
+                          value={item[column]}
+                          onChange={(e) => {
+                            const updatedData = [...table.data];
+                            updatedData[rowIndex][column] = e.target.value;
+                            const updatedTables = [...tables];
+                            updatedTables[index].data = updatedData;
+                            setTables(updatedTables);
+                          }}
+                        />
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <button onClick={() => addNewColumn(index)}>Add New Column</button>
+          <button onClick={() => addNewEntry(index)}>Add New Entry</button>
+          <div>
+            <h2>Calculations</h2>
+            <table>
+              <tbody>
+                <tr>
+                  {table.columns.map((column, colIndex) => (
+                    <td key={colIndex}>
+                      {table.columnVisibility[column] && (
+                        <div>
+                          {column === 'quantity' ? (
+                            <input
+                              type="number"
+                              value={table.columnVisibility[column]}
+                              readOnly
+                            />
+                          ) : (
+                            <input
+                              type="text"
+                              title="text"
+                              value={table.columnVisibility[column]}
+                              readOnly
+                            />
+                          )}
+                        </div>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ))}
+      <button onClick={calculateTotal}>Calculate Totals</button>
+    </div>
+  );
+}
+
+export default App;
