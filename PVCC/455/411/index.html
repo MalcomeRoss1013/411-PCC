@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cost Calculator</title>
+    <style>
+        /* Your CSS styles can go here */
+    </style>
+</head>
+<body>
+    <h1>Cost Calculator</h1>
+    <button id="create-new-form">Create New Form</button>
+    <button id="reset-forms">Start Over</button>
+    <div id="forms-container">
+        <!-- Loop through forms -->
+        <!-- Replace this comment with the loop if you're using a templating engine like React or Angular -->
+        <div id="form-1">
+            <h2>Form 1</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <!-- Loop through columns -->
+                        <!-- Replace this comment with the loop if you're using a templating engine like React or Angular -->
+                        <th>
+                            <div>
+                                <input type="checkbox" id="column-included" />
+                                included
+                            </div>
+                        </th>
+                        <th>
+                            <div>
+                                <input type="checkbox" id="column-quantity" />
+                                quantity
+                            </div>
+                        </th>
+                        <!-- Add more columns here -->
+                    </tr>
+                </thead>
+                <tbody id="form-1-data">
+                    <!-- Loop through data rows -->
+                    <!-- Replace this comment with the loop if you're using a templating engine like React or Angular -->
+                    <tr>
+                        <td><input type="checkbox" id="data-included" /></td>
+                        <td><input type="number" id="data-quantity" value="1" /></td>
+                        <!-- Add more data columns here -->
+                    </tr>
+                    <!-- Add more rows as needed -->
+                </tbody>
+            </table>
+            <button id="add-new-column">Add New Column</button>
+            <button id="add-new-entry">Add New Entry</button>
+            <div>
+                <h2>Totals</h2>
+                <table>
+                    <tbody id="form-1-total">
+                        <!-- Loop through columns -->
+                        <!-- Replace this comment with the loop if you're using a templating engine like React or Angular -->
+                        <tr>
+                            <td><input type="number" id="total-included" /></td>
+                            <td><input type="number" id="total-quantity" /></td>
+                            <!-- Add more total columns here -->
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button id="calculate-total">Calculate Totals</button>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript code for button click events and dynamic functionality goes here
+
+        // Example functions for button click events
+        function handleQuantityChange() {
+            const newQuantity = document.getElementById('data-quantity').value;
+            const updatedQuantity = parseInt(newQuantity, 10) || 0;
+            document.getElementById('data-quantity').value = updatedQuantity;
+        }
+
+        function toggleColumnVisibility() {
+            const isChecked = document.getElementById('column-included').checked;
+            // Add logic to show/hide the column based on isChecked
+        }
+
+        function addNewEntry() {
+            // Add logic to add a new entry to the table
+        }
+
+        function addNewColumn() {
+            const newColumnName = prompt('Enter the name for the new column:');
+            if (newColumnName) {
+                // Add logic to add a new column to the table
+            }
+        }
+
+        function createNewForm() {
+            // Add logic to create a new form
+        }
+
+        function resetForms() {
+            // Add logic to reset forms
+        }
+
+        function calculateTotal() {
+            // Add logic to calculate totals and update the total table
+        }
+
+        // Attach click event listeners to buttons
+        document.getElementById('create-new-form').addEventListener('click', createNewForm);
+        document.getElementById('reset-forms').addEventListener('click', resetForms);
+        document.getElementById('add-new-column').addEventListener('click', addNewColumn);
+        document.getElementById('add-new-entry').addEventListener('click', addNewEntry);
+        document.getElementById('calculate-total').addEventListener('click', calculateTotal);
+        document.getElementById('data-quantity').addEventListener('change', handleQuantityChange);
+        document.getElementById('column-included').addEventListener('change', toggleColumnVisibility);
+    </script>
+</body>
+</html>
